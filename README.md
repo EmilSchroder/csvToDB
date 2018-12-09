@@ -2,6 +2,15 @@
 
 The purpose of the user_upload.php script is to create a DB table 'users', parse a CSV file containing names, surnames and emails to validate the information and then insert into the DB if it passes vaildation, and reject with an error otherwise.  
 
+To start clone the repository, create the database and run the vaildations using ```php user_upload.php``` then the appropriate command line directive.
+
+
+## Requirements 
+
+> PHP7
+> MySQL
+
+
 ## Script Command Line Directives
 
 ### --create_table
@@ -27,6 +36,6 @@ MySQL host
 ### -help
 Will output the list of command line directives with details.
 
-## Flow
+
 
 
