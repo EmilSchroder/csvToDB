@@ -36,6 +36,19 @@ MySQL host
 ### -help
 Will output the list of command line directives with details.
 
+## Email Vailidation
+
+An address will be considered invalid if it contains any of the following:
+
+* No ```@``` sign
+* More than one ```@``` sign
+* No domain (fragement such as "abc.abc" after the ```@```)
+* A dot ```.``` leading the address
+* A dot ```.``` immediately before an ```@```
+* A dot ```.``` immediatley after an ```@```
+* Any number of dots in succession
+
+
 #### Credits 
 Helpful websites included php.net, tutorialrepublic.com, codedevelopr.com and dev.mysql.com
 
