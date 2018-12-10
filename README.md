@@ -37,6 +37,6 @@ MySQL host
 Will output the list of command line directives with details.
 
 #### Credits 
-Helpful websites included php.net, tutorialrepublic.com, and dev.mysql.com
+Helpful websites included php.net, tutorialrepublic.com, codedevelopr.com and dev.mysql.com
 
 

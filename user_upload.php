@@ -47,7 +47,14 @@
 	}
 
 	function validateFile($file){
-		echo "be it this file: ".$file." \n";
+
+		$explore_file = fopen($file, 'r');
+		while(!feof($explore_file)){
+			$data_entries[] = fgetcsv($explore_file, 1024);
+		}
+		fclose($explore_file);
+		print_r($data_entries);
+		echo 'What what the size is '.sizeof($data_entries)." \n";
 	}
 
 	function inputFile($file){
