@@ -35,7 +35,7 @@
 			break;
 		case '--file':
 			$file = $argv[2];
-			validateFile($file);
+			parseFile($file);
 			inputFile($file);
 		default:
 			# code...
@@ -46,15 +46,35 @@
 		echo "Creating a table \n";
 	}
 
-	function validateFile($file){
-
+	function parseFile($file){
+	// open and read csv file into an array
 		$explore_file = fopen($file, 'r');
 		while(!feof($explore_file)){
 			$data_entries[] = fgetcsv($explore_file, 1024);
 		}
 		fclose($explore_file);
-		print_r($data_entries);
-		echo 'What what the size is '.sizeof($data_entries)." \n";
+
+		validateData($data_entries);
+	}
+
+	function validateData($data_entries){
+		foreach ($data_entries as $key => $value) {
+			if($key!=='0'){
+				$modified_data = array(capName($value[0]), capSurname($value[1]), validateEmail($value[2]));
+			}
+		}
+	}
+
+	function capName($name){
+		echo "this is a name ".$name." \n";
+	}
+
+	function capSurname($surname){			
+		echo "this is a surname ".$surname." \n";
+	}
+
+	function validateEmail($email){
+		echo "this is a email ".$email." \n";
 	}
 
 	function inputFile($file){
