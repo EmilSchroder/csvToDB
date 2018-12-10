@@ -60,23 +60,31 @@
 
 	function validateData($data_entries){
 		foreach ($data_entries as $key => $value) {
-			if($key!=='0'){
+			if($key!='0'){
 				$modified_data = array(capName($value[0]), capSurname($value[1]), validateEmail($value[2]));
 			}
 		}
 	}
 
 	function capName($name){
-		return $name = ucfirst(strtolower($name));
+		return $name = trim(ucfirst(strtolower($name)));
 	}
 
 	function capSurname($surname){			
-		return $surname = ucfirst(strtolower($surname));
+		return $surname = trim(ucfirst(strtolower($surname)));
 	}
 
 	function validateEmail($email){
-		$email = strtolower($email);
-		
+		$email = trim(strtolower($email));
+
+		$is_valid=filter_var($email, FILTER_VALIDATE_EMAIL);
+
+		if($is_valid){
+			echo "legit \n";
+		} else {
+			echo "nah man \n";
+		}
+
 	}
 
 	function inputFile($file){
