@@ -1,6 +1,6 @@
 <?php 
 
-	require('./createUserTable.php');
+	
 
 	$command = $argv[1];
 
@@ -15,6 +15,7 @@
 			printf($mask, "-p", "MySQL password");
 			printf($mask, "-h", "MySQL host");
 			printf($mask, "--help", "Lists command directives and their effects");
+			printf($mask, "--read_file [csv file]", "Lists out the file specified in the terminal");
 			break;
 		case '-u':
 			echo "MySQL username is \"catalystuser\" \n";
@@ -25,12 +26,32 @@
 		case '-h': 
 			echo "MySQL host is \"??????\" \n";
 			break;
-		case '--create_table':
-			createUserTable();
+		case '--read_file':
+			$file = $argv[2];
+			readfile($file);
 			break;
+		case '--create_table':
+			createTable();
+			break;
+		case '--file':
+			$file = $argv[2];
+			validateFile($file);
+			inputFile($file);
 		default:
 			# code...
 			break;
+	}
+
+	function createTable(){
+		echo "Creating a table \n";
+	}
+
+	function validateFile($file){
+		echo "be it this file: ".$file." \n";
+	}
+
+	function inputFile($file){
+		echo "The file ".$file." be in \n";
 	}
 
 ?>

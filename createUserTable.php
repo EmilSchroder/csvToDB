@@ -1,7 +1,7 @@
 <?p 
 
-	function createUserTable(){
-		return (echo "hello \n")
-	}
+$heelo = 'hello';
+
+return $heelo;
 
 ?>
