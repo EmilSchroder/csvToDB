@@ -37,8 +37,9 @@
 			$file = $argv[2];
 			parseFile($file);
 			inputFile($file);
+			break;
 		default:
-			# code...
+			echo "Command not recognised, please use --help to get list of valid commands";
 			break;
 	}
 
@@ -66,15 +67,16 @@
 	}
 
 	function capName($name){
-		echo "this is a name ".$name." \n";
+		return $name = ucfirst(strtolower($name));
 	}
 
 	function capSurname($surname){			
-		echo "this is a surname ".$surname." \n";
+		return $surname = ucfirst(strtolower($surname));
 	}
 
 	function validateEmail($email){
-		echo "this is a email ".$email." \n";
+		$email = strtolower($email);
+		
 	}
 
 	function inputFile($file){
