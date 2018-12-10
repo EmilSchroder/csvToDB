@@ -44,6 +44,10 @@ Emails will be validated using PHP's input validation filter FILTER_VALIDATE_EMA
 
 Names, surnames and emails will be set to all lower case and have whitespace removed. Names and surnames will then be capatailised. The use of punctuation will not be scrubbed from a name or surname given the existence of at least one individual that possesses punctuation as part of their legal name (see: http://members.calbar.ca.gov/fal/Licensee/Detail/240959) though this can be revisited if the need is there to scrub.
 
+## Error messages
+
+```[email address] is not a valid email address``` - the email address provided has not passed verification so the user will not be added to the database.
+
 ## Desicions made
 
 * Capatalisation of first and last names will only apply to the first letter i.e. munro -> Munro, o'connor->O'connor.

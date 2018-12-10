@@ -76,13 +76,13 @@
 
 	function validateEmail($email){
 		$email = trim(strtolower($email));
-
 		$is_valid=filter_var($email, FILTER_VALIDATE_EMAIL);
 
 		if($is_valid){
-			echo "legit \n";
+			return $email;
 		} else {
-			echo "nah man \n";
+			echo $email." is not a valid email address. User will not be added to database. \n";
+			return false;
 		}
 
 	}
