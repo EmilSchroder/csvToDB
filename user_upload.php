@@ -4,6 +4,10 @@
 
 	$command = $argv[1];
 
+	$username = "";
+	$password = "";
+	$host = "";
+
 	switch ($command) {
 		case '--help':
 
@@ -107,15 +111,35 @@
 			die("MySQL could not connect".mysqli_connect_error()." \n");
 		}
 
-		$sql = "CREATE DATABASE pototes";
+		$sql_db = "CREATE DATABASE Emil_temp_DB";
 
-		if(mysqli_query($link,$sql)){
-			echo "DB successfully created \n";
+		if(mysqli_query($link,$sql_db)){
+			echo "DB Emil_temp_DB successfully created \n";
 		} else {
-			echo "Could not execute $sql ".mysqli_error($link);
+			echo "Could not execute $sql_db ".mysqli_error($link);
 		}
 		mysqli_close($link);
-		echo "Connection closed \n";
+	
+		$link = mysqli_connect($host, $username, $password, "Emil_temp_DB");
+
+		if($link===false){
+			die("Connection to database failed: ".mysqli_connect_error()." \n");
+		}
+
+		$sql_table = "CREATE TABLE users(
+			id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+			name VARCHAR(40) NOT NULL,
+			surname VARCHAR(40) NOT NULL,
+			email VARCHAR(80) NOT NULL UNIQUE 
+			)";
+
+		if(mysqli_query($link,$sql_table)){
+			echo "users table successfully created in Emil_temp_DB \n";
+		} else {
+			echo "Could not execute $sql_table ".mysqli_error($link);
+		}
+		mysqli_close($link);
+
 
 	}
 
