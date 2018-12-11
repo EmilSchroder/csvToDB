@@ -14,7 +14,7 @@ To start clone the repository, create the database and run the vaildations using
 ## Script Command Line Directives
 
 ### --create_table
-This command will be used to create the MySQL 'users' table
+This command will be used to create the MySQL 'users' table with id, name, surname and email columns within the database "Temp_DB".
 
 ### --file [csv file name]
 To be used to parse the csv file and validate the information. Once information is validated and/or errors are resolved then it will give the option of inserting the data into the database.

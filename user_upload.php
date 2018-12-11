@@ -4,9 +4,6 @@
 
 	$command = $argv[1];
 
-	$username = "";
-	$password = "";
-	$host = "";
 
 	switch ($command) {
 		case '--help':
@@ -94,7 +91,30 @@
 	}
 
 	function insert_data($data){
-		echo "AOK \n";
+		echo "Please type your MySQL username: \n";
+		$username = trim(fgets(STDIN));
+		echo "Please type your MySQL password: \n";
+		$password = trim(fgets(STDIN));
+		echo "Please type in your MySQL host name: \n";
+		$host = trim(fgets(STDIN));
+		$db = "Temp_DB";
+
+		$link = mysqli_connect($host, $username, $password, "Temp_DB");
+
+		if($link===false){
+			die("Connection to database failed: ".mysqli_connect_error()." \n");
+		}
+
+		$query = "INSERT INTO users (name, surname, email) VALUES ('$data[0]', '$data[1]', '$data[2]')";
+
+		if(mysqli_query($link, $query)){
+			echo "Inserts successful \n";
+		} else {
+			echo "Issues inserting data : ".mysqli_error($link)." \n";
+		}
+
+		mysqli_close($link);
+
 	}
 
 	function create_table(){
@@ -105,22 +125,25 @@
 		echo "Please type in your MySQL host name: \n";
 		$host = trim(fgets(STDIN));
 
+
+		# Create the database
 		$link = mysqli_connect($host, $username, $password);
 
 		if($link===false){
 			die("MySQL could not connect".mysqli_connect_error()." \n");
 		}
 
-		$sql_db = "CREATE DATABASE Emil_temp_DB";
+		$sql_db = "CREATE DATABASE Temp_DB";
 
 		if(mysqli_query($link,$sql_db)){
-			echo "DB Emil_temp_DB successfully created \n";
+			echo "DB Temp_DB successfully created \n";
 		} else {
 			echo "Could not execute $sql_db ".mysqli_error($link);
 		}
 		mysqli_close($link);
-	
-		$link = mysqli_connect($host, $username, $password, "Emil_temp_DB");
+		
+		# Create the table within the database
+		$link = mysqli_connect($host, $username, $password, "Temp_DB");
 
 		if($link===false){
 			die("Connection to database failed: ".mysqli_connect_error()." \n");
@@ -134,12 +157,12 @@
 			)";
 
 		if(mysqli_query($link,$sql_table)){
-			echo "users table successfully created in Emil_temp_DB \n";
+			echo "users table successfully created in Temp_DB \n";
 		} else {
 			echo "Could not execute $sql_table ".mysqli_error($link);
 		}
 		mysqli_close($link);
-
+			echo "Connection closed \n";
 
 	}
 
