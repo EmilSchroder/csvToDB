@@ -212,17 +212,25 @@ function call_switch($command){
 			die("Connection to database failed: ".mysqli_connect_error()." \n");
 		}
 
-		$sql_table = "CREATE TABLE users(
+		$sql_table_drop = "DROP TABLE IF EXISTS users";
+		$sql_table_create = "CREATE TABLE users(
 			id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 			name VARCHAR(40) NOT NULL,
 			surname VARCHAR(40) NOT NULL,
 			email VARCHAR(80) NOT NULL UNIQUE 
 			)";
 
-		if(mysqli_query($link,$sql_table)){
+		if(mysqli_query($link, $sql_table_drop)){
+			echo "old users table dropped in Temp_DB \n";
+		} else {
+			echo "Could not execute $sql_table_drop ".mysqli_error($link);
+		}
+
+
+		if(mysqli_query($link, $sql_table_create)){
 			echo "users table successfully created in Temp_DB \n";
 		} else {
-			echo "Could not execute $sql_table ".mysqli_error($link);
+			echo "Could not execute $sql_table_create ".mysqli_error($link);
 		}
 		mysqli_close($link);
 
