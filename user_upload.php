@@ -12,7 +12,7 @@
 	call_switch($command);
 
 function call_switch($command){
-	var_dump($command);
+
 	switch (trim($command[0])) {
 		case '--help':
 
@@ -41,7 +41,6 @@ function call_switch($command){
 			echo "Current MySQL password is ".$GLOBALS['password'].". Type -k to keep or write in a new password \n";
 			$GLOBALS['password'] = trim(fgets(STDIN));
 			if($GLOBALS['password']!="-k"){
-				file_put_contents("password.txt",$GLOBALS['password']);
 				echo "password changed to ".$GLOBALS['password']." \n";
 			}
 			call_switch(end_statement());
@@ -50,7 +49,6 @@ function call_switch($command){
 			echo "Current MySQL host is ".$GLOBALS['host'].". Type -k to keep or write in a new host \n";
 			$GLOBALS['host'] = trim(fgets(STDIN));
 			if($GLOBALS['host']!="-k"){
-				file_put_contents("host.txt",$GLOBALS['host']);
 				echo "host changed to ".$GLOBALS['host']." \n";
 			}
 			call_switch(end_statement());
@@ -71,7 +69,18 @@ function call_switch($command){
 			break;
 		case '--file':
 			$file = trim($command[1]);
-			parseFile($file);
+			echo "commad is ".sizeof($command)." big";
+			if(sizeof($command) < 3){
+				parseFile($file, false);
+
+			} else if(trim($command[2])==='--dryrun'){
+				parseFile($file, true);
+
+			} else {
+				echo "Error: invaild command $command[2] ";
+
+			}
+
 			call_switch(end_statement());
 			break;
 		case '--exit':
@@ -90,7 +99,7 @@ function call_switch($command){
 	}
 
 
-	function parseFile($file){
+	function parseFile($file, $dryrun){
 	// open and read csv file into an array
 		if(file_exists($file)){
 		$explore_file = fopen($file, 'r');
@@ -99,23 +108,17 @@ function call_switch($command){
 		}
 		fclose($explore_file);
 
-		validateData($data_entries);
+		validateData($data_entries, $dryrun);
 		}else{
 			echo "Error: file $file does not exist";
 		}
 
 	}
 
-	function validateData($data_entries){
+	function validateData($data_entries, $dryrun){
 
-		#echo "Please type your MySQL username: \n";
-		#$username = trim(fgets(STDIN));
-		#echo "Please type your MySQL password: \n";
-		#$password = trim(fgets(STDIN));
-		#echo "Please type in your MySQL host name: \n";
-		#$host = trim(fgets(STDIN));
-		echo "Please type in your MySQL database name: \n";
-		$db = trim(fgets(STDIN));
+			echo "Please type in your MySQL database name: \n";
+			$db = trim(fgets(STDIN));
 
 		foreach ($data_entries as $key => $value) {
 			if($key!='0'){
@@ -123,12 +126,15 @@ function call_switch($command){
 				$modified_data = array(capName($value[0]), capSurname($value[1]), validateEmail($value[2]));
 
 				if($modified_data[2]!==false){
+					if(!$dryrun){
 
+						insert_data($modified_data, $GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"], $db);
+					}else{
+						echo "dryrun complete for ".$modified_data[0]." ".$modified_data[1].". No data inserted \n";
+					}
 
-
-					insert_data($modified_data, $GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"], $db);
 				} else {
-					echo "User ".$modified_data[0]." ".$modified_data[1]." has an invalid email address of ".$value[2]." \n";
+					echo "User ".$modified_data[0]." ".$modified_data[1]." has an invalid email address of ".$value[2].". Data not inserted \n";
 				}
 			}
 		}
@@ -177,13 +183,6 @@ function call_switch($command){
 
 	function create_database(){
 
-		#echo "Please type your MySQL username: \n";
-		#$username = trim(fgets(STDIN));
-		#echo "Please type your MySQL password: \n";
-		#$password = trim(fgets(STDIN));
-		#echo "Please type in your MySQL host name: \n";
-		#$host = trim(fgets(STDIN));
-
 		# Create the database
 		$link = mysqli_connect($GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"]);
 
@@ -202,12 +201,7 @@ function call_switch($command){
 	}
 
 	function create_table(){
-		#echo "Please type your MySQL username: \n";
-		#$username = trim(fgets(STDIN));
-		#echo "Please type your MySQL password: \n";
-		#$password = trim(fgets(STDIN));
-		#echo "Please type in your MySQL host name: \n";
-		#$host = trim(fgets(STDIN));
+
 		echo "Please type in your MySQL database you would like to use \n";
 		$db = trim(fgets(STDIN));
 		
