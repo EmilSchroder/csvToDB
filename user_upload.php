@@ -1,6 +1,8 @@
 <?php 
 
-	
+	$username = file_get_contents("username.txt");
+	$password = file_get_contents("password.txt");
+	$host = file_get_contents("host.txt");
 
 	$command = $argv[1];
 
@@ -16,21 +18,37 @@
 			printf($mask, "-p", "MySQL password");
 			printf($mask, "-h", "MySQL host");
 			printf($mask, "--help", "Lists command directives and their effects");
-			printf($mask, "--read_file [csv file]", "Lists out the file specified in the terminal");
+			printf($mask, "--read [csv file]", "Lists out the file specified in the terminal");
 			printf($mask, "--create_database", "creates a dedicated database called Temp_DB in MySQL which can be used to store data");
 			break;
 		case '-u':
-			echo "MySQL username is \"catalystuser\" \n";
+			echo "Current MySQL username is ".$username.". Type -k to keep or write in a new username \n";
+			$username = trim(fgets(STDIN));
+			if($username!="-k"){
+				file_put_contents("username.txt",$username);
+				echo "username changed to $username \n";
+			}
 			break;
 		case '-p':
-			echo "MySQL password is \"Password1@\" \n";
+			echo "Current MySQL password is ".$password.". Type -k to keep or write in a new password \n";
+			$password = trim(fgets(STDIN));
+			if($password!="-k"){
+				file_put_contents("password.txt",$password);
+				echo "password changed to $password \n";
+			}
 			break;
 		case '-h': 
-			echo "MySQL host is \"??????\" \n";
+			echo "Current MySQL host is ".$host.". Type -k to keep or write in a new host \n";
+			$host = trim(fgets(STDIN));
+			if($host!="-k"){
+				file_put_contents("host.txt",$host);
+				echo "host changed to $host \n";
+			}
 			break;
-		case '--read_file':
+		case '--read':
 			$file = $argv[2];
 			readfile($file);
+			echo " \n";
 			break;
 		case '--create_table':
 			create_table();
@@ -43,7 +61,7 @@
 			parseFile($file);
 			break;
 		default:
-			echo "Command not recognised, please use --help to get list of valid commands";
+			echo "Command not recognised, please use --help to get list of valid commands \n";
 			break;
 	}
 
