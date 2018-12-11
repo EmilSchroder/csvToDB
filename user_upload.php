@@ -31,21 +31,17 @@
 			readfile($file);
 			break;
 		case '--create_table':
-			createTable();
+			create_table();
 			break;
 		case '--file':
 			$file = $argv[2];
 			parseFile($file);
-			inputFile($file);
 			break;
 		default:
 			echo "Command not recognised, please use --help to get list of valid commands";
 			break;
 	}
 
-	function createTable(){
-		echo "Creating a table \n";
-	}
 
 	function parseFile($file){
 	// open and read csv file into an array
@@ -61,7 +57,14 @@
 	function validateData($data_entries){
 		foreach ($data_entries as $key => $value) {
 			if($key!='0'){
+
 				$modified_data = array(capName($value[0]), capSurname($value[1]), validateEmail($value[2]));
+
+				if($modified_data[2]!==false){
+					insert_data($modified_data);
+				} else {
+					echo "User ".$modified_data[0]." ".$modified_data[1]." has an invalid email address of ".$value[2]." \n";
+				}
 			}
 		}
 	}
@@ -81,14 +84,39 @@
 		if($is_valid){
 			return $email;
 		} else {
-			echo $email." is not a valid email address. User will not be added to database. \n";
 			return false;
 		}
 
 	}
 
-	function inputFile($file){
-		echo "The file ".$file." be in \n";
+	function insert_data($data){
+		echo "AOK \n";
+	}
+
+	function create_table(){
+		echo "Please type your MySQL username: \n";
+		$username = trim(fgets(STDIN));
+		echo "Please type your MySQL password: \n";
+		$password = trim(fgets(STDIN));
+		echo "Please type in your MySQL host name: \n";
+		$host = trim(fgets(STDIN));
+
+		$link = mysqli_connect($host, $username, $password);
+
+		if($link===false){
+			die("MySQL could not connect".mysqli_connect_error()." \n");
+		}
+
+		$sql = "CREATE DATABASE pototes";
+
+		if(mysqli_query($link,$sql)){
+			echo "DB successfully created \n";
+		} else {
+			echo "Could not execute $sql ".mysqli_error($link);
+		}
+		mysqli_close($link);
+		echo "Connection closed \n";
+
 	}
 
 ?>
