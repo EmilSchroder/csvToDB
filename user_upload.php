@@ -17,15 +17,16 @@ function call_switch($command){
 		case '--help':
 
 			$mask = "%-20s | %-30s | x |\n";
-			printf($mask, "--file [csv name]", "runs validations on csv file data and inserts vaild data into the users table");
-			printf($mask, "--create_table", "creates the users table in the database");
-			printf($mask, "--dry_run", "used as a postscript to --file [csv name] to just run data vaildations on a csv file");
 			printf($mask, "-u", "MySQL username");
 			printf($mask, "-p", "MySQL password");
 			printf($mask, "-h", "MySQL host");
-			printf($mask, "--help", "Lists command directives and their effects");
-			printf($mask, "--read [csv file]", "Lists out the file specified in the terminal");
 			printf($mask, "--create_database", "creates a dedicated database called Temp_DB in MySQL which can be used to store data");
+			printf($mask, "--create_table", "creates the users table in the database");
+			printf($mask, "--dry_run", "used as a postscript to --file [csv name] to just run data vaildations on a csv file");
+			printf($mask, "--file [csv name]", "runs validations on csv file data and inserts vaild data into the users table");
+			printf($mask, "--read [csv file]", "Lists out the file specified in the terminal");
+			printf($mask, "--help", "Lists command directives and their effects");
+			printf($mask, "--exit", "Exits the programme");
 
 			call_switch(end_statement());	
 			break;
@@ -69,7 +70,7 @@ function call_switch($command){
 			break;
 		case '--file':
 			$file = trim($command[1]);
-			echo "commad is ".sizeof($command)." big";
+
 			if(sizeof($command) < 3){
 				parseFile($file, false);
 
@@ -84,6 +85,7 @@ function call_switch($command){
 			call_switch(end_statement());
 			break;
 		case '--exit':
+			echo "farewell \n";
 			break;
 		default:
 			echo "Command not recognised, please use --help to get list of valid commands \n";
@@ -117,20 +119,21 @@ function call_switch($command){
 
 	function validateData($data_entries, $dryrun){
 
-			echo "Please type in your MySQL database name: \n";
-			$db = trim(fgets(STDIN));
+		echo "Please type in your MySQL database name: \n";
+		$db = trim(fgets(STDIN));
 
 		foreach ($data_entries as $key => $value) {
 			if($key!='0'){
 
 				$modified_data = array(capName($value[0]), capSurname($value[1]), validateEmail($value[2]));
-
+				// if email is invalid reject
 				if($modified_data[2]!==false){
 					if(!$dryrun){
 
 						insert_data($modified_data, $GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"], $db);
+
 					}else{
-						echo "dryrun complete for ".$modified_data[0]." ".$modified_data[1].". No data inserted \n";
+						echo "dryrun complete for ".$modified_data[0]." ".$modified_data[1].". Data not inserted \n";
 					}
 
 				} else {
@@ -165,7 +168,7 @@ function call_switch($command){
 
 		$link = mysqli_connect($host, $username, $password, $db);
 
-		if($link===false){
+		if(!$link){
 			die("Connection to database failed: ".mysqli_connect_error()." \n");
 		}
 
@@ -183,10 +186,10 @@ function call_switch($command){
 
 	function create_database(){
 
-		# Create the database
+		# Create a database
 		$link = mysqli_connect($GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"]);
 
-		if($link===false){
+		if(!$link){
 			die("MySQL could not connect".mysqli_connect_error()." \n");
 		}
 
@@ -205,10 +208,10 @@ function call_switch($command){
 		echo "Please type in your MySQL database you would like to use \n";
 		$db = trim(fgets(STDIN));
 		
-		# Create the table within the database
+		// Create the table within a database
 		$link = mysqli_connect($GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"], $db);
 
-		if($link===false){
+		if(!$link){
 			die("Connection to database failed: ".mysqli_connect_error()." \n");
 		}
 
