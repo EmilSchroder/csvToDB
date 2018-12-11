@@ -1,13 +1,24 @@
 <?php 
 
-	$username = file_get_contents("username.txt");
-	$password = file_get_contents("password.txt");
-	$host = file_get_contents("host.txt");
+	#$username = file_get_contents("username.txt");
+	#$password = file_get_contents("password.txt");
+	#$host = file_get_contents("host.txt");
 
-	$command = $argv[1];
+	$GLOBALS['username'] = "root";
+	$GLOBALS['password'] = "PassworD";
+	$GLOBALS['host'] = "localhost";
+
+	echo "Welcome to csv inputter. For options on what to do type --help \n";
 
 
-	switch ($command) {
+
+	$command = explode(" ", fgets(STDIN));
+	call_switch($command);
+	#$command = $argv[1];
+
+function call_switch($command){
+	var_dump($command);
+	switch (trim($command[0])) {
 		case '--help':
 
 			$mask = "%-20s | %-30s | x |\n";
@@ -20,49 +31,67 @@
 			printf($mask, "--help", "Lists command directives and their effects");
 			printf($mask, "--read [csv file]", "Lists out the file specified in the terminal");
 			printf($mask, "--create_database", "creates a dedicated database called Temp_DB in MySQL which can be used to store data");
+
+			call_switch(end_statement());	
 			break;
 		case '-u':
-			echo "Current MySQL username is ".$username.". Type -k to keep or write in a new username \n";
-			$username = trim(fgets(STDIN));
-			if($username!="-k"){
-				file_put_contents("username.txt",$username);
-				echo "username changed to $username \n";
+			echo "Current MySQL username is ".$GLOBALS['username'].". Type -k to keep or write in a new username \n";
+			$GLOBALS['username'] = trim(fgets(STDIN));
+			if($GLOBALS['username']!="-k"){
+				echo "username changed to ".$GLOBALS['username']." \n";
 			}
+			call_switch(end_statement());
 			break;
 		case '-p':
-			echo "Current MySQL password is ".$password.". Type -k to keep or write in a new password \n";
-			$password = trim(fgets(STDIN));
-			if($password!="-k"){
-				file_put_contents("password.txt",$password);
-				echo "password changed to $password \n";
+			echo "Current MySQL password is ".$GLOBALS['password'].". Type -k to keep or write in a new password \n";
+			$GLOBALS['password'] = trim(fgets(STDIN));
+			if($GLOBALS['password']!="-k"){
+				file_put_contents("password.txt",$GLOBALS['password']);
+				echo "password changed to ".$GLOBALS['password']." \n";
 			}
+			call_switch(end_statement());
 			break;
 		case '-h': 
-			echo "Current MySQL host is ".$host.". Type -k to keep or write in a new host \n";
-			$host = trim(fgets(STDIN));
-			if($host!="-k"){
-				file_put_contents("host.txt",$host);
-				echo "host changed to $host \n";
+			echo "Current MySQL host is ".$GLOBALS['host'].". Type -k to keep or write in a new host \n";
+			$GLOBALS['host'] = trim(fgets(STDIN));
+			if($GLOBALS['host']!="-k"){
+				file_put_contents("host.txt",$GLOBALS['host']);
+				echo "host changed to ".$GLOBALS['host']." \n";
 			}
+			call_switch(end_statement());
 			break;
 		case '--read':
-			$file = $argv[2];
+			$file = trim($command[1]);
 			readfile($file);
 			echo " \n";
+			call_switch(end_statement());
 			break;
 		case '--create_table':
 			create_table();
+			call_switch(end_statement());
 			break;
 		case '--create_database':
 			create_database();
+			call_switch(end_statement());
 			break;
 		case '--file':
-			$file = $argv[2];
+			$file = $command[1];
 			parseFile($file);
+			call_switch(end_statement());
+			break;
+		case '--exit':
 			break;
 		default:
 			echo "Command not recognised, please use --help to get list of valid commands \n";
+			call_switch(end_statement());
 			break;
+	}
+}
+
+	function end_statement(){
+		echo "\n please enter next command or --exit \n";
+		$command = explode(" ", fgets(STDIN));
+		return $command;
 	}
 
 
