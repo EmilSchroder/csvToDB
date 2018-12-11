@@ -17,6 +17,7 @@
 			printf($mask, "-h", "MySQL host");
 			printf($mask, "--help", "Lists command directives and their effects");
 			printf($mask, "--read_file [csv file]", "Lists out the file specified in the terminal");
+			printf($mask, "--create_database", "creates a dedicated database called Temp_DB in MySQL which can be used to store data");
 			break;
 		case '-u':
 			echo "MySQL username is \"catalystuser\" \n";
@@ -33,6 +34,9 @@
 			break;
 		case '--create_table':
 			create_table();
+			break;
+		case '--create_database':
+			create_database();
 			break;
 		case '--file':
 			$file = $argv[2];
@@ -56,13 +60,26 @@
 	}
 
 	function validateData($data_entries){
+
+		echo "Please type your MySQL username: \n";
+		$username = trim(fgets(STDIN));
+		echo "Please type your MySQL password: \n";
+		$password = trim(fgets(STDIN));
+		echo "Please type in your MySQL host name: \n";
+		$host = trim(fgets(STDIN));
+		echo "Please type in your MySQL host name: \n";
+		$db = trim(fgets(STDIN));
+
 		foreach ($data_entries as $key => $value) {
 			if($key!='0'){
 
 				$modified_data = array(capName($value[0]), capSurname($value[1]), validateEmail($value[2]));
 
 				if($modified_data[2]!==false){
-					insert_data($modified_data);
+
+
+
+					insert_data($modified_data, $host, $username, $password, $db);
 				} else {
 					echo "User ".$modified_data[0]." ".$modified_data[1]." has an invalid email address of ".$value[2]." \n";
 				}
@@ -90,41 +107,35 @@
 
 	}
 
-	function insert_data($data){
-		echo "Please type your MySQL username: \n";
-		$username = trim(fgets(STDIN));
-		echo "Please type your MySQL password: \n";
-		$password = trim(fgets(STDIN));
-		echo "Please type in your MySQL host name: \n";
-		$host = trim(fgets(STDIN));
-		$db = "Temp_DB";
+	function insert_data($data, $host, $username, $password, $db){
 
-		$link = mysqli_connect($host, $username, $password, "Temp_DB");
+
+		$link = mysqli_connect($host, $username, $password, $db);
 
 		if($link===false){
 			die("Connection to database failed: ".mysqli_connect_error()." \n");
 		}
 
-		$query = "INSERT INTO users (name, surname, email) VALUES ('$data[0]', '$data[1]', '$data[2]')";
+		$query = "INSERT INTO users (name, surname, email) VALUES (\"$data[0]\", \"$data[1]\", \"$data[2]\")";
 
 		if(mysqli_query($link, $query)){
 			echo "Inserts successful \n";
 		} else {
-			echo "Issues inserting data : ".mysqli_error($link)." \n";
+			echo "Issues inserting data : ".mysqli_error($link).". Data for $data[0] $data[1] not added to table \n";
 		}
 
 		mysqli_close($link);
 
 	}
 
-	function create_table(){
+	function create_database(){
+
 		echo "Please type your MySQL username: \n";
 		$username = trim(fgets(STDIN));
 		echo "Please type your MySQL password: \n";
 		$password = trim(fgets(STDIN));
 		echo "Please type in your MySQL host name: \n";
 		$host = trim(fgets(STDIN));
-
 
 		# Create the database
 		$link = mysqli_connect($host, $username, $password);
@@ -136,14 +147,25 @@
 		$sql_db = "CREATE DATABASE Temp_DB";
 
 		if(mysqli_query($link,$sql_db)){
-			echo "DB Temp_DB successfully created \n";
+			echo "Database Temp_DB successfully created \n";
 		} else {
-			echo "Could not execute $sql_db ".mysqli_error($link);
+			echo "Could not execute $sql_db ".mysqli_error($link)." \n";
 		}
 		mysqli_close($link);
+	}
+
+	function create_table(){
+		echo "Please type your MySQL username: \n";
+		$username = trim(fgets(STDIN));
+		echo "Please type your MySQL password: \n";
+		$password = trim(fgets(STDIN));
+		echo "Please type in your MySQL host name: \n";
+		$host = trim(fgets(STDIN));
+		echo "Please type in your MySQL database you would like to use \n";
+		$db = trim(fgets(STDIN));
 		
 		# Create the table within the database
-		$link = mysqli_connect($host, $username, $password, "Temp_DB");
+		$link = mysqli_connect($host, $username, $password, $db);
 
 		if($link===false){
 			die("Connection to database failed: ".mysqli_connect_error()." \n");
