@@ -1,11 +1,7 @@
 <?php 
 
-	#$username = file_get_contents("username.txt");
-	#$password = file_get_contents("password.txt");
-	#$host = file_get_contents("host.txt");
-
-	$GLOBALS['username'] = "root";
-	$GLOBALS['password'] = "PassworD";
+	$GLOBALS['username'] = "catalystuser";
+	$GLOBALS['password'] = "Password1@";
 	$GLOBALS['host'] = "localhost";
 
 	echo "Welcome to csv inputter. For options on what to do type --help \n";
@@ -14,7 +10,6 @@
 
 	$command = explode(" ", fgets(STDIN));
 	call_switch($command);
-	#$command = $argv[1];
 
 function call_switch($command){
 	var_dump($command);
@@ -75,7 +70,7 @@ function call_switch($command){
 			call_switch(end_statement());
 			break;
 		case '--file':
-			$file = $command[1];
+			$file = trim($command[1]);
 			parseFile($file);
 			call_switch(end_statement());
 			break;
@@ -97,6 +92,7 @@ function call_switch($command){
 
 	function parseFile($file){
 	// open and read csv file into an array
+		if(file_exists($file)){
 		$explore_file = fopen($file, 'r');
 		while(!feof($explore_file)){
 			$data_entries[] = fgetcsv($explore_file, 1024);
@@ -104,17 +100,21 @@ function call_switch($command){
 		fclose($explore_file);
 
 		validateData($data_entries);
+		}else{
+			echo "Error: file $file does not exist";
+		}
+
 	}
 
 	function validateData($data_entries){
 
-		echo "Please type your MySQL username: \n";
-		$username = trim(fgets(STDIN));
-		echo "Please type your MySQL password: \n";
-		$password = trim(fgets(STDIN));
-		echo "Please type in your MySQL host name: \n";
-		$host = trim(fgets(STDIN));
-		echo "Please type in your MySQL host name: \n";
+		#echo "Please type your MySQL username: \n";
+		#$username = trim(fgets(STDIN));
+		#echo "Please type your MySQL password: \n";
+		#$password = trim(fgets(STDIN));
+		#echo "Please type in your MySQL host name: \n";
+		#$host = trim(fgets(STDIN));
+		echo "Please type in your MySQL database name: \n";
 		$db = trim(fgets(STDIN));
 
 		foreach ($data_entries as $key => $value) {
@@ -126,7 +126,7 @@ function call_switch($command){
 
 
 
-					insert_data($modified_data, $host, $username, $password, $db);
+					insert_data($modified_data, $GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"], $db);
 				} else {
 					echo "User ".$modified_data[0]." ".$modified_data[1]." has an invalid email address of ".$value[2]." \n";
 				}
@@ -177,15 +177,15 @@ function call_switch($command){
 
 	function create_database(){
 
-		echo "Please type your MySQL username: \n";
-		$username = trim(fgets(STDIN));
-		echo "Please type your MySQL password: \n";
-		$password = trim(fgets(STDIN));
-		echo "Please type in your MySQL host name: \n";
-		$host = trim(fgets(STDIN));
+		#echo "Please type your MySQL username: \n";
+		#$username = trim(fgets(STDIN));
+		#echo "Please type your MySQL password: \n";
+		#$password = trim(fgets(STDIN));
+		#echo "Please type in your MySQL host name: \n";
+		#$host = trim(fgets(STDIN));
 
 		# Create the database
-		$link = mysqli_connect($host, $username, $password);
+		$link = mysqli_connect($GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"]);
 
 		if($link===false){
 			die("MySQL could not connect".mysqli_connect_error()." \n");
@@ -202,17 +202,17 @@ function call_switch($command){
 	}
 
 	function create_table(){
-		echo "Please type your MySQL username: \n";
-		$username = trim(fgets(STDIN));
-		echo "Please type your MySQL password: \n";
-		$password = trim(fgets(STDIN));
-		echo "Please type in your MySQL host name: \n";
-		$host = trim(fgets(STDIN));
+		#echo "Please type your MySQL username: \n";
+		#$username = trim(fgets(STDIN));
+		#echo "Please type your MySQL password: \n";
+		#$password = trim(fgets(STDIN));
+		#echo "Please type in your MySQL host name: \n";
+		#$host = trim(fgets(STDIN));
 		echo "Please type in your MySQL database you would like to use \n";
 		$db = trim(fgets(STDIN));
 		
 		# Create the table within the database
-		$link = mysqli_connect($host, $username, $password, $db);
+		$link = mysqli_connect($GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"], $db);
 
 		if($link===false){
 			die("Connection to database failed: ".mysqli_connect_error()." \n");
@@ -231,7 +231,6 @@ function call_switch($command){
 			echo "Could not execute $sql_table ".mysqli_error($link);
 		}
 		mysqli_close($link);
-			echo "Connection closed \n";
 
 	}
 
