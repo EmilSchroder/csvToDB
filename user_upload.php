@@ -1,7 +1,7 @@
 <?php 
 
-	$GLOBALS['username'] = "catalystuser";
-	$GLOBALS['password'] = "Password1@";
+	$GLOBALS['username'] = "root";
+	$GLOBALS['password'] = "";
 	$GLOBALS['host'] = "localhost";
 
 	echo "Welcome to csv inputter. For options on what to do type --help \n";
@@ -17,13 +17,13 @@ function call_switch($command){
 		case '--help':
 
 			$mask = "%-20s | %-30s | x |\n";
-			printf($mask, "-u", "MySQL username");
-			printf($mask, "-p", "MySQL password");
-			printf($mask, "-h", "MySQL host");
+			printf($mask, "-h", "Reads current MySQL host and gives the option of changing it.");
+			printf($mask, "-u", "Reads current MySQL username and gives the option of changing it.");
+			printf($mask, "-p", "Reads current MySQL password and gives the option of changing it.");
 			printf($mask, "--create_database", "creates a dedicated database called Temp_DB in MySQL which can be used to store data");
-			printf($mask, "--create_table", "creates the users table in the database");
-			printf($mask, "--dry_run", "used as a postscript to --file [csv name] to just run data vaildations on a csv file");
+			printf($mask, "--create_table", "creates the users table in a specified database");
 			printf($mask, "--file [csv name]", "runs validations on csv file data and inserts vaild data into the users table");
+			printf($mask, "--dry_run", "used as a postscript to --file [csv name] to just run data vaildations on a csv file without inserting the data");
 			printf($mask, "--read [csv file]", "Lists out the file specified in the terminal");
 			printf($mask, "--help", "Lists command directives and their effects");
 			printf($mask, "--exit", "Exits the programme");
@@ -78,7 +78,7 @@ function call_switch($command){
 				parseFile($file, true);
 
 			} else {
-				echo "Error: invaild command $command[2] ";
+				echo "Command not recognised, please use --help to get list of valid commands \n";
 
 			}
 
@@ -119,8 +119,13 @@ function call_switch($command){
 
 	function validateData($data_entries, $dryrun){
 
-		echo "Please type in your MySQL database name: \n";
-		$db = trim(fgets(STDIN));
+		if(!$dryrun){
+			echo "Please type in your MySQL database name: \n";
+			$db = trim(fgets(STDIN));
+		} else {
+			$db = "";
+		}
+
 
 		foreach ($data_entries as $key => $value) {
 			if($key!='0'){
@@ -186,7 +191,7 @@ function call_switch($command){
 
 	function create_database(){
 
-		# Create a database
+		// Create a database
 		$link = mysqli_connect($GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"]);
 
 		if(!$link){
