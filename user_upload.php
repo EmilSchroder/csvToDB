@@ -177,7 +177,7 @@ function call_switch($command){
 		$link = mysqli_connect($host, $username, $password, $db);
 
 		if(!$link){
-			die("Connection to database failed: ".mysqli_connect_error()." \n");
+			echo "Connection to database failed: ".mysqli_connect_error()." \n";
 			call_switch(end_statement());
 		}
 
@@ -199,7 +199,7 @@ function call_switch($command){
 		$link = mysqli_connect($GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"]);
 
 		if(!$link){
-			die("MySQL could not connect".mysqli_connect_error()." \n");
+			echo "MySQL could not connect".mysqli_connect_error()." \n";
 			call_switch(end_statement());
 		}
 
