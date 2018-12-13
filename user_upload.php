@@ -32,24 +32,27 @@ function call_switch($command){
 			break;
 		case '-u':
 			echo "Current MySQL username is ".$GLOBALS['username'].". Type -k to keep or write in a new username \n";
-			$GLOBALS['username'] = trim(fgets(STDIN));
-			if($GLOBALS['username']!="-k"){
+			$username_temp = trim(fgets(STDIN));
+			if($username_temp!="-k"){
+				$GLOBALS['username'] = $username_temp;
 				echo "username changed to ".$GLOBALS['username']." \n";
 			}
 			call_switch(end_statement());
 			break;
 		case '-p':
 			echo "Current MySQL password is ".$GLOBALS['password'].". Type -k to keep or write in a new password \n";
-			$GLOBALS['password'] = trim(fgets(STDIN));
-			if($GLOBALS['password']!="-k"){
+			$password_temp = trim(fgets(STDIN));
+			if($password_temp!="-k"){
+				$GLOBALS['password'] = $password_temp;
 				echo "password changed to ".$GLOBALS['password']." \n";
 			}
 			call_switch(end_statement());
 			break;
 		case '-h': 
 			echo "Current MySQL host is ".$GLOBALS['host'].". Type -k to keep or write in a new host \n";
-			$GLOBALS['host'] = trim(fgets(STDIN));
-			if($GLOBALS['host']!="-k"){
+			$host_temp = trim(fgets(STDIN));
+			if($host_temp!="-k"){
+				$GLOBALS['host'] = $host_temp;
 				echo "host changed to ".$GLOBALS['host']." \n";
 			}
 			call_switch(end_statement());
@@ -175,6 +178,7 @@ function call_switch($command){
 
 		if(!$link){
 			die("Connection to database failed: ".mysqli_connect_error()." \n");
+			call_switch(end_statement());
 		}
 
 		$query = "INSERT INTO users (name, surname, email) VALUES (\"$data[0]\", \"$data[1]\", \"$data[2]\")";
@@ -196,6 +200,7 @@ function call_switch($command){
 
 		if(!$link){
 			die("MySQL could not connect".mysqli_connect_error()." \n");
+			call_switch(end_statement());
 		}
 
 		$sql_db = "CREATE DATABASE Temp_DB";
@@ -217,7 +222,8 @@ function call_switch($command){
 		$link = mysqli_connect($GLOBALS["host"], $GLOBALS["username"], $GLOBALS["password"], $db);
 
 		if(!$link){
-			die("Connection to database failed: ".mysqli_connect_error()." \n");
+			echo "Connection to database failed: ".mysqli_connect_error()." \n";
+			call_switch(end_statement());
 		}
 
 		$sql_table_drop = "DROP TABLE IF EXISTS users";
