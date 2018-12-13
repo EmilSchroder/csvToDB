@@ -57,6 +57,13 @@ Emails will be validated using PHP's input validation filter FILTER_VALIDATE_EMA
 
 Names, surnames and emails will be set to all lower case and have whitespace removed. Names and surnames will then be capatailised. The use of punctuation will not be scrubbed from a name or surname given the existence of at least one individual that possesses punctuation as part of their legal name (see: http://members.calbar.ca.gov/fal/Licensee/Detail/240959) though this can be revisited if the need is there to scrub.
 
+## Database Table - users
+The users table will be in the following format:
+
+| id | name | surname | email |
+| -- | ---- | ------- | ----- |
+| 1 | John | Smith | jsmith@gmail.com |
+
 ## Error messages
 
 ```Command not recognised``` - the command given to the terminal is not one that user_upload.php is programmed to handle or is a misspelling of an accepted command.
